@@ -54,6 +54,16 @@ cd ..
 
 That writes the three packages into `frontend/package.json` and `frontend/package-lock.json`. The image install still happens later, when `frontend/Dockerfile` runs `npm install --omit=dev` during `docker compose up --build`.
 
+```bash
+cd frontend
+npm install @opentelemetry/api@^1.9.0 \
+            @opentelemetry/auto-instrumentations-node@^0.57.0 \
+            @opentelemetry/winston-transport@^0.9.0
+cd ..
+```
+
+That writes the three packages into `frontend/package.json` and `frontend/package-lock.json`. The image install still happens later, when `frontend/Dockerfile` runs `npm install --omit=dev` during `docker compose up --build`.
+
 ```diff
 // frontend/package.json
 +    "@opentelemetry/api": "^1.9.0",
