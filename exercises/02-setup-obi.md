@@ -95,7 +95,7 @@ discovery:
 docker compose up --build
 ```
 
-A pre-built RED metrics dashboard lives in [grafana/dashboards/red-metrics.json](../grafana/dashboards/red-metrics.json). It is automatically provisioned on startup.
+A pre-built [RED](https://grafana.com/blog/the-red-method-how-to-instrument-your-services/#the-red-method) metrics dashboard lives in [grafana/dashboards/red-metrics.json](../grafana/dashboards/red-metrics.json). It is automatically provisioned on startup.
 
 > [!NOTE]
 > Metrics may take up to a minute to appear after the services start. If the panels are empty, wait a moment and refresh.
