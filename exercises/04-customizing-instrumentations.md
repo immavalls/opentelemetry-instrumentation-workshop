@@ -202,7 +202,7 @@ Check out the [metrics drilldown](http://localhost:3000/a/grafana-metricsdrilldo
 ## Catch up
 
 ```bash
-git checkout origin/04-customizing-instrumentations
+git checkout 04-customizing-instrumentations
 ```
 
 ---
