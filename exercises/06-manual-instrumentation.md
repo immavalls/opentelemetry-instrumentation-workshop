@@ -12,7 +12,7 @@ design decisions; the full diff lives on GitHub.
 > [!TIP]
 > Open the [full diff for this exercise](https://github.com/immavalls/opentelemetry-instrumentation-workshop/compare/05-processing...06-manual-instrumentation)
 > in a second tab and read it alongside this walkthrough. To run the finished version
-> locally: `git checkout origin/06-manual-instrumentation`.
+> locally: `git checkout 06-manual-instrumentation`.
 
 ## Contents
 
@@ -185,7 +185,7 @@ Check out the [metrics drilldown](http://localhost:3000/a/grafana-metricsdrilldo
 ## Catch up
 
 ```bash
-git checkout origin/06-manual-instrumentation
+git checkout 06-manual-instrumentation
 ```
 
 ---
