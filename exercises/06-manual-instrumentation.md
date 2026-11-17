@@ -176,9 +176,9 @@ an error log with `exception.type` and `exception.message` correlated to the fai
 
 ### Frontend — login spans
 
-Open the app at <http://localhost:8080>, log in via **Acme SSO** (OAuth), and then via the
-plain username form. [Open the frontend `login` spans in Grafana (Tempo)](http://localhost:3000/explore?schemaVersion=1&orgId=1&panes=%7B%22abc%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20resource.service.name%20%3D%20%5C%22frontend%5C%22%20%26%26%20name%20%3D%20%5C%22login%5C%22%20%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D)
-and click one to verify:
+Open the app at <http://localhost:8080> and log in via **Acme SSO** (OAuth).
+[Open the Acme login spans in Grafana (Tempo)](http://localhost:3000/explore?schemaVersion=1&orgId=1&panes=%7B%22abc%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20span.auth.provider.name%20%3D%20%5C%22acme%5C%22%20%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D)
+(`{ span.auth.provider.name = "acme" }`) and click the `login` span to verify:
 
 - `auth.provider.name` = `acme`
 - `enduser.id` = the username, hashed by the collector from [Exercise 05](05-processing.md):
@@ -187,15 +187,9 @@ and click one to verify:
 
 > [!NOTE]
 > A fast, successful login can be dropped by tail sampling. If you don't see the `login`
-> span, try the failed login below, which is always kept, or see the tip above to see every trace.
+> span, see the tip above to see every trace.
 
 The plain username login has no span — it only records the `auth.client.login.duration` metric.
-
-Try logging in with a non-existent username via Acme SSO to trigger a `user_not_found` outcome.
-[Open the failed logins in Grafana (Tempo)](http://localhost:3000/explore?schemaVersion=1&orgId=1&panes=%7B%22abc%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20resource.service.name%20%3D%20%5C%22frontend%5C%22%20%26%26%20name%20%3D%20%5C%22login%5C%22%20%26%26%20span.error.type%20%3D%20%5C%22user_not_found%5C%22%20%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D):
-the span should have `error.type` = `user_not_found` and span status `ERROR`. Check the
-`auth.client.login.duration` metric in the **Metrics** panel — the `error.type` dimension
-should appear on the histogram.
 
 Check out the [metrics drilldown](http://localhost:3000/a/grafana-metricsdrilldown-app/), [traces drilldown](http://localhost:3000/a/grafana-exploretraces-app/), and [logs drilldown](http://localhost:3000/a/grafana-lokiexplore-app/) — great tools to see what telemetry is available.
 
