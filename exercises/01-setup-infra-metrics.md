@@ -54,7 +54,7 @@ The `hostmetrics` receiver reads from the host filesystem and `docker_stats` rea
 
 Add the following receivers to [otel-collector/config.yaml](https://github.com/immavalls/opentelemetry-instrumentation-workshop/blob/01-setup-infra-metrics/otel-collector/config.yaml) under the existing `receivers:` key.
 
-#### [docker_stats](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.147.0/receiver/dockerstatsreceiver)
+#### [docker_stats](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.149.0/receiver/dockerstatsreceiver)
 
 Scrapes per-container CPU, memory, network, and block I/O metrics every 10 s via the Docker socket.
 
@@ -73,7 +73,7 @@ Scrapes per-container CPU, memory, network, and block I/O metrics every 10 s via
 +    timeout: 5s
 ```
 
-#### [hostmetrics](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.147.0/receiver/hostmetricsreceiver)
+#### [hostmetrics](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.149.0/receiver/hostmetricsreceiver)
 
 Scrapes CPU, disk, filesystem, memory, network, paging, and process metrics from the host every 10 s. `root_path` points to the bind-mounted host filesystem.
 
@@ -109,7 +109,7 @@ Scrapes CPU, disk, filesystem, memory, network, paging, and process metrics from
 +      processes: {}
 ```
 
-### Step 3 — Add the [resourcedetection](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.147.0/processor/resourcedetectionprocessor) processor
+### Step 3 — Add the [resourcedetection](https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/v0.149.0/processor/resourcedetectionprocessor) processor
 
 Enriches every span, metric, and log with resource attributes detected at startup. `env` reads `OTEL_RESOURCE_ATTRIBUTES` from the collector's own environment — not from each application container. This makes it suitable for deployment-wide attributes like `deployment.environment.name` that apply uniformly to all telemetry. Configure per-service resources on each application independently. `system` detects `host.name`, `os.type`, and related attributes from the host — required by the host metrics dashboard.
 
