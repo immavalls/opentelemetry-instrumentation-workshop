@@ -138,6 +138,13 @@ docker compose up --build
 
 Open Grafana at <http://localhost:3000/d/apm-dashboard>.
 
+> [!TIP]
+> Exercise 05's collector changes affect what you see below: `tail_sampling` only keeps error
+> traces and traces slower than one second, and `transform/anonymize_enduser` replaces
+> `enduser.id` with a hash. To see every trace, temporarily remove `tail_sampling` from the
+> `traces` pipeline in [otel-collector/config.yaml](https://github.com/immavalls/opentelemetry-instrumentation-workshop/blob/06-manual-instrumentation/otel-collector/config.yaml)
+> and restart the collector with `docker compose restart otel-collector`.
+
 ### Backend — DB calls
 
 The APM dashboard opens on the `frontend` service, which has no database. Set **Name** at
@@ -162,7 +169,7 @@ then click a span to verify:
 > slower than one second. With Chaos Mode on (the default) you will see spans such as
 > `SELECT restaurants`, `SELECT users` and `SELECT photos`, but fast successful requests
 > like submitting a rating are dropped, so `INSERT ratings` only shows up in the
-> **DB client calls** panel, not as a span.
+> **DB client calls** panel, not as a span (unless you remove `tail_sampling`, see the tip above).
 
 For error spans (e.g. with Chaos Mode enabled), check the **Logs** panel — you should see
 an error log with `exception.type` and `exception.message` correlated to the failing span.
@@ -170,17 +177,23 @@ an error log with `exception.type` and `exception.message` correlated to the fai
 ### Frontend — login spans
 
 Open the app at <http://localhost:8080>, log in via **Acme SSO** (OAuth), and then via the
-plain username form. In Grafana, find a trace for the frontend service and locate the
-`login` span. Verify:
+plain username form. [Open the frontend `login` spans in Grafana (Tempo)](http://localhost:3000/explore?schemaVersion=1&orgId=1&panes=%7B%22abc%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20resource.service.name%20%3D%20%5C%22frontend%5C%22%20%26%26%20name%20%3D%20%5C%22login%5C%22%20%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D)
+and click one to verify:
 
 - `auth.provider.name` = `acme`
-- `enduser.id` = the username
-- `enduser.pseudo.id` = the numeric user id as a string
+- `enduser.id` = the username, hashed by the collector from [Exercise 05](05-processing.md):
+  the first 8 characters of its SHA-256 (for `alice` that is `2bd806c9`)
+- `enduser.pseudo.id` = the user's id in the database, an 8-character hex string
+
+> [!NOTE]
+> A fast, successful login can be dropped by tail sampling. If you don't see the `login`
+> span, try the failed login below, which is always kept, or see the tip above to see every trace.
 
 The plain username login has no span — it only records the `auth.client.login.duration` metric.
 
 Try logging in with a non-existent username via Acme SSO to trigger a `user_not_found` outcome.
-The span should have `error.type` = `user_not_found` and span status `ERROR`. Check the
+[Open the failed logins in Grafana (Tempo)](http://localhost:3000/explore?schemaVersion=1&orgId=1&panes=%7B%22abc%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22queryType%22%3A%22traceql%22%2C%22query%22%3A%22%7B%20resource.service.name%20%3D%20%5C%22frontend%5C%22%20%26%26%20name%20%3D%20%5C%22login%5C%22%20%26%26%20span.error.type%20%3D%20%5C%22user_not_found%5C%22%20%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D):
+the span should have `error.type` = `user_not_found` and span status `ERROR`. Check the
 `auth.client.login.duration` metric in the **Metrics** panel — the `error.type` dimension
 should appear on the histogram.
 
