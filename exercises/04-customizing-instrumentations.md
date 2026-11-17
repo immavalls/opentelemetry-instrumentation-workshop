@@ -155,7 +155,7 @@ The filter receives the raw `*http.Request` before any span is created. Returnin
 docker compose up --build
 ```
 
-Log in as any user (e.g. `alice`) first, so Query B has data.
+Open the app at [http://localhost:8080](http://localhost:8080) and log in as any user (e.g. `alice`) first, so Query B has data: only logged-in requests carry a user identity, so that's when the `enduser.id` attribute from Part 2 gets set on their spans. No password is needed. The pre-seeded accounts are `alice`, `bob`, `carla` and `admin` (see [Auth](../README.md#auth)).
 
 **Query A — Part 1, `net` spans gone** — should return no results — [Open in Grafana (Tempo)](http://localhost:3000/explore?schemaVersion=1&orgId=1&panes=%7B%22abc%22%3A%7B%22datasource%22%3A%22tempo%22%2C%22queries%22%3A%5B%7B%22refId%22%3A%22A%22%2C%22datasource%22%3A%7B%22type%22%3A%22tempo%22%2C%22uid%22%3A%22tempo%22%7D%2C%22queryType%22%3A%22traceql%22%2C%22limit%22%3A20%2C%22tableType%22%3A%22traces%22%2C%22metricsQueryType%22%3A%22range%22%2C%22serviceMapUseNativeHistograms%22%3Afalse%2C%22query%22%3A%22%7B%20resource.service.name%20%3D%20%5C%22frontend%5C%22%20%26%26%20name%20%3D%20%5C%22tcp.connect%5C%22%20%7D%22%7D%5D%2C%22range%22%3A%7B%22from%22%3A%22now-1h%22%2C%22to%22%3A%22now%22%7D%7D%7D):
 
